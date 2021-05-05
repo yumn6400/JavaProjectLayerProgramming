@@ -374,7 +374,7 @@ throw new DAOException(ioException.getMessage());
 }
 public boolean codeExists(int code)throws DAOException
 {
-if(code<=0)throw new DAOException("Invalid code"+code);
+if(code<=0)return false;
 try
 {
 File file=new File(FILE_NAME);

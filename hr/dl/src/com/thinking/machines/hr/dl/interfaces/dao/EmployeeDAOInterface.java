@@ -9,7 +9,7 @@ public void update(EmployeeDTOInterface employeeDTO)throws DAOException;
 public void delete(int code)throws DAOException;
 public Set<EmployeeDTOInterface> getAll() throws DAOException;
 public Set<EmployeeDTOInterface> getByDesignationCode(int designationCode) throws DAOException;
-public boolean isDesignationAllocated(int designationCode)throws DAOException;
+public boolean isDesignationAlloted(int designationCode)throws DAOException;
 public EmployeeDTOInterface getByEmployeeId(String employeeId)throws DAOException;
 public EmployeeDTOInterface getByPANNumber(String panNumber)throws DAOException;
 public EmployeeDTOInterface getByAadharCardNumber(String aadharCardNumber)throws DAOException;

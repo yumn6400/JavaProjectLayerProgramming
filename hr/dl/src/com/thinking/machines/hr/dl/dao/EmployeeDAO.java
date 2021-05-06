@@ -1,4 +1,4 @@
-package com.thinking.machines.hr.dl.interfaces.dao;
+package com.thinking.machines.hr.dl.dao;
 import java.util.*;
 import java.math.*;
 import java.text.*;
@@ -130,15 +130,153 @@ throw new DAOException("Not yet implemented");
 }
 public Set<EmployeeDTOInterface> getAll() throws DAOException
 {
-throw new DAOException("Not yet implemented");
+Set<EmployeeDTOInterface> employees=new TreeSet<>();
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false)return employees;
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return employees;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+EmployeeDTOInterface employeeDTO;
+SimpleDateFormat simpleDateFormat;
+simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+employeeDTO=new EmployeeDTO();
+employeeDTO.setEmployeeId(randomAccessFile.readLine());
+employeeDTO.setName(randomAccessFile.readLine());
+employeeDTO.setDesignationCode(Integer.parseInt(randomAccessFile.readLine()));
+try
+{
+employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
+}catch(ParseException pe)
+{
+// do nothing
+}
+employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
+employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
+employeeDTO.setPANNumber(randomAccessFile.readLine());
+employeeDTO.setAadharCardNumber(randomAccessFile.readLine());
+employees.add(employeeDTO);
+}
+randomAccessFile.close();
+return employees;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public Set<EmployeeDTOInterface> getByDesignationCode(int designationCode) throws DAOException
 {
-throw new DAOException("Not yet implemented");
-}
-public boolean isDesignationAllocated(int designationCode)throws DAOException
+if(new DesignationDAO().codeExists(designationCode)==false)
 {
-throw new DAOException("Not yet implemented");
+throw new DAOException("Invalid designation code:"+designationCode);
+}
+Set<EmployeeDTOInterface> employees=new TreeSet<>();
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false)return employees;
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return employees;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+EmployeeDTOInterface employeeDTO;
+SimpleDateFormat simpleDateFormat;
+simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+String fEmployeeId;
+String fName;
+int fDesignationCode;
+int x;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+fName=randomAccessFile.readLine();
+fDesignationCode=Integer.parseInt(randomAccessFile.readLine());
+if(fDesignationCode!=designationCode)
+{
+for(x=1;x<=6;x++)randomAccessFile.readLine();
+continue;
+}
+employeeDTO=new EmployeeDTO();
+employeeDTO.setEmployeeId(fEmployeeId);
+employeeDTO.setName(fName);
+employeeDTO.setDesignationCode(fDesignationCode);
+try
+{
+employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
+}catch(ParseException pe)
+{
+// do nothing
+}
+employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
+employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
+employeeDTO.setPANNumber(randomAccessFile.readLine());
+employeeDTO.setAadharCardNumber(randomAccessFile.readLine());
+employees.add(employeeDTO);
+}
+randomAccessFile.close();
+return employees;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
+}
+public boolean isDesignationAlloted(int designationCode)throws DAOException
+{
+if(new DesignationDAO().codeExists(designationCode)==false)
+{
+throw new DAOException("Invalid designation code:"+designationCode);
+}
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false)return false;
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+SimpleDateFormat simpleDateFormat;
+simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+int fDesignationCode;
+int x;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+fDesignationCode=Integer.parseInt(randomAccessFile.readLine());
+if(fDesignationCode==designationCode)
+{
+randomAccessFile.close();
+return true;
+}
+for(x=1;x<=6;x++)randomAccessFile.readLine();
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public EmployeeDTOInterface getByEmployeeId(String employeeId)throws DAOException
 {

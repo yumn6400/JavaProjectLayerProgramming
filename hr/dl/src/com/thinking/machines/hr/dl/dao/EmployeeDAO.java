@@ -3,6 +3,7 @@ import java.util.*;
 import java.math.*;
 import java.text.*;
 import java.io.*;
+import com.thinking.machines.enums.*;
 import com.thinking.machines.hr.dl.exceptions.*;
 import com.thinking.machines.hr.dl.interfaces.dao.*;
 import com.thinking.machines.hr.dl.interfaces.dto.*;
@@ -97,7 +98,7 @@ throw new DAOException("Aadhar card number ("+aadharCardNumber+") exists");
 }
 lastGeneratedEmployeeId++;
 recordCount++;
-employeeId="A"+String.format("%-10d",lastGeneratedEmployeeId);
+employeeId="A"+lastGeneratedEmployeeId;
 randomAccessFile.writeBytes(employeeId+"\n");
 randomAccessFile.writeBytes(name+"\n");
 randomAccessFile.writeBytes(designationCode+"\n");
@@ -147,6 +148,7 @@ randomAccessFile.readLine();
 EmployeeDTOInterface employeeDTO;
 SimpleDateFormat simpleDateFormat;
 simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+char fGender;
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
 employeeDTO=new EmployeeDTO();
@@ -160,7 +162,9 @@ employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
 {
 // do nothing
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+fGender=randomAccessFile.readLine().charAt(0);
+if(fGender=='M')employeeDTO.setGender(GENDER.MALE);
+if(fGender=='F')employeeDTO.setGender(GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());
@@ -201,6 +205,7 @@ String fEmployeeId;
 String fName;
 int fDesignationCode;
 int x;
+int fGender;
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
 fEmployeeId=randomAccessFile.readLine();
@@ -222,7 +227,9 @@ employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
 {
 // do nothing
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+fGender=randomAccessFile.readLine().charAt(0);
+if(fGender=='M')employeeDTO.setGender(GENDER.MALE);
+if(fGender=='F')employeeDTO.setGender(GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());
@@ -280,7 +287,60 @@ throw new DAOException(ioException.getMessage());
 }
 public EmployeeDTOInterface getByEmployeeId(String employeeId)throws DAOException
 {
-throw new DAOException("Not yet implemented");
+if(employeeId==null)throw new DAOException("Invalid employeeId:"+employeeId);
+employeeId=employeeId.trim();
+if(employeeId.length()==0)throw new DAOException("Length of employeeId is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false)throw new DAOException("Invalid employeeId:"+employeeId);
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid employeeId:"+employeeId);
+}
+EmployeeDTOInterface employeeDTO;
+SimpleDateFormat simpleDateFormat;
+simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+String fEmployeeId;
+char fGender;
+int x;
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+if(fEmployeeId.equalsIgnoreCase(employeeId))
+{
+employeeDTO=new EmployeeDTO();
+employeeDTO.setEmployeeId(fEmployeeId);
+employeeDTO.setName(randomAccessFile.readLine());
+employeeDTO.setDesignationCode(Integer.parseInt(randomAccessFile.readLine()));
+try
+{
+employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
+}catch(ParseException pe)
+{
+// do nothing
+}
+employeeDTO.setGender((randomAccessFile.readLine().charAt(0)=='M')?GENDER.MALE:GENDER.FEMALE);
+employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
+employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
+employeeDTO.setPANNumber(randomAccessFile.readLine());
+employeeDTO.setAadharCardNumber(randomAccessFile.readLine());
+randomAccessFile.close();
+return employeeDTO;
+}
+for(x=1;x<=8;x++)randomAccessFile.readLine(); 
+}
+randomAccessFile.close();
+throw new DAOException("Invalid employeeId"+employeeId);
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public EmployeeDTOInterface getByPANNumber(String panNumber)throws DAOException
 {
@@ -292,7 +352,41 @@ throw new DAOException("Not yet implemented");
 }
 public boolean employeeIdExists(String employeeId)throws DAOException
 {
-throw new DAOException("Not yet implemented");
+if(employeeId==null)return false;
+employeeId=employeeId.trim();
+if(employeeId.length()==0)return false;
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false)return false;
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+EmployeeDTOInterface employeeDTO;
+String fEmployeeId;
+int x;
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+if(fEmployeeId.equalsIgnoreCase(employeeId))
+{
+randomAccessFile.close();
+return true;
+}
+for(x=1;x<=8;x++)randomAccessFile.readLine(); 
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public boolean panNumberExists(String panNumber)throws DAOException
 {

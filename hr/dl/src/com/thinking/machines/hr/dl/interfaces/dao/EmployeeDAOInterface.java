@@ -1,5 +1,6 @@
 package com.thinking.machines.hr.dl.interfaces.dao;
 import java.util.*;
+import com.thinking.machines.enums.*;
 import com.thinking.machines.hr.dl.exceptions.*;
 import com.thinking.machines.hr.dl.interfaces.dto.*;
 public interface EmployeeDAOInterface

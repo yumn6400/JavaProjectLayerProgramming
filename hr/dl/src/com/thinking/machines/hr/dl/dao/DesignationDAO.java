@@ -1,5 +1,6 @@
 package com.thinking.machines.hr.dl.dao;
 import com.thinking.machines.hr.dl.dto.*;
+import com.thinking.machines.hr.dl.dao.*;
 import com.thinking.machines.hr.dl.interfaces.dao.*;
 import com.thinking.machines.hr.dl.interfaces.dto.*;
 import com.thinking.machines.hr.dl.exceptions.*;
@@ -179,6 +180,7 @@ public void delete(int code)throws DAOException
 if(code<=0)throw new DAOException("Invalid code:"+code);
 try
 {
+String fTitle="";
 File file=new File(FILE_NAME);
 if(file.exists()==false)throw new DAOException("Invalid code:"+code);
 RandomAccessFile randomAccessFile;
@@ -189,24 +191,28 @@ randomAccessFile.close();
 throw new DAOException("Invalid code:"+code);
 }
 int fCode;
-String fTitle;
 boolean found=false;
 randomAccessFile.readLine();
 int recordCount=Integer.parseInt(randomAccessFile.readLine().trim());
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
 fCode=Integer.parseInt(randomAccessFile.readLine());
+fTitle=randomAccessFile.readLine();
 if(fCode==code)
 {
 found=true;
 break;
 }
-randomAccessFile.readLine();
 }
 if(found==false)
 {
 randomAccessFile.close();
 throw new DAOException("Invalid code:"+code);
+}
+if(new EmployeeDAO().isDesignationAlloted(code))
+{
+randomAccessFile.close();
+throw new DAOException("Employee exists with designation: "+fTitle);
 }
 File tmpFile=new File("tmp.data");
 if(tmpFile.exists())tmpFile.delete();

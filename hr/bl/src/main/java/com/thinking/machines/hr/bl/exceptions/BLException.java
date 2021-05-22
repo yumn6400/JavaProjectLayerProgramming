@@ -1,4 +1,4 @@
-package com.thinking.machines.hr.dl.exceptions;
+package com.thinking.machines.hr.bl.exceptions;
 import java.util.*;
 public class BLException extends Exception
 {

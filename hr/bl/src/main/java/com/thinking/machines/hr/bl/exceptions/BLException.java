@@ -30,7 +30,7 @@ public void removeException(String property)
 {
 this.exceptions.remove(property);
 }
-public int getExceptionCount()
+public int getExceptionsCount()
 {
 if(this.genericException!=null)return this.exceptions.size()+1;
 return this.exceptions.size();
@@ -45,7 +45,7 @@ return this.genericException!=null;
 }
 public boolean hasExceptions()
 {
-return this.getExceptionCount()>0;
+return this.getExceptionsCount()>0;
 }
 public List<String> getProperties()
 {

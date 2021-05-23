@@ -45,16 +45,72 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
-public static DesignationManager getDesignationManager() throws BLException
+public static DesignationManagerInterface getDesignationManager() throws BLException
 {
 if(designationManager==null)designationManager=new DesignationManager();
 return designationManager;
 }
 public void addDesignation(DesignationInterface designation)throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+BLException blException;
+blException=new BLException();
+if(designation==null)
+{
+blException.setGenericException("Designation required");
 throw blException;
+}
+int code=designation.getCode();
+String title=designation.getTitle();
+if(code!=0)
+{
+blException.addException("code","Code should be zero");
+}
+if(title==null)
+{
+blException.addException("title","Title required");
+title="";
+}
+else
+{
+title=title.trim();
+if(title.length()==0)
+{
+blException.addException("title","Title required");
+}
+}
+if(title.length()>0)
+{
+if(this.titleWiseDesignationsMap.containsKey(title.toUpperCase()))
+{
+blException.addException("title","Designation: "+title+" exists.");
+}
+}
+if(blException.hasExceptions())
+{
+throw blException;
+}
+try
+{
+DesignationDTOInterface designationDTO;
+designationDTO=new DesignationDTO();
+designationDTO.setTitle(title);
+DesignationDAOInterface designationDAO;
+designationDAO=new DesignationDAO();
+designationDAO.add(designationDTO);
+code=designationDTO.getCode();
+designation.setCode(code);
+DesignationInterface dsDesignation; //use Designation also
+dsDesignation=new Designation();
+dsDesignation.setCode(code);
+dsDesignation.setTitle(title);
+codeWiseDesignationsMap.put(new Integer(code),dsDesignation);
+titleWiseDesignationsMap.put(title,dsDesignation);
+designationsSet.add(dsDesignation);
+}catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
 }
 public void updateDesignation(DesignationInterface designation)throws BLException
 {

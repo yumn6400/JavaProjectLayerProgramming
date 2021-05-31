@@ -250,6 +250,12 @@ randomAccessFile.writeBytes(tmpRandomAccessFile.readLine());
 randomAccessFile.writeBytes("\n");
 }
 randomAccessFile.setLength(tmpRandomAccessFile.length());
+recordCount--;
+recordCountString=String.valueOf(recordCount);
+while(recordCountString.length()<10)recordCountString+=" ";
+randomAccessFile.seek(0);
+randomAccessFile.readLine();
+randomAccessFile.writeBytes(recordCountString+"\n");
 tmpRandomAccessFile.setLength(0);
 randomAccessFile.close();
 tmpRandomAccessFile.close();

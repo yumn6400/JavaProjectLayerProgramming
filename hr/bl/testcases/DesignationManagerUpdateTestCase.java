@@ -4,19 +4,19 @@ import com.thinking.machines.hr.bl.managers.*;
 import com.thinking.machines.hr.bl.interfaces.pojo.*;
 import com.thinking.machines.hr.bl.interfaces.managers.*;
 import java.util.*;
-class DesignationManagerAddTestCase
+class DesignationManagerUpdateTestCase
 {
 public static void main(String gg[])
 {
 DesignationInterface designation=new Designation();
-designation.setCode(0);
-designation.setTitle("manager");
+designation.setCode(3);
+designation.setTitle("puen");
 try
 {
 DesignationManagerInterface designationManager;
 designationManager=DesignationManager.getDesignationManager();
-designationManager.addDesignation(designation);
-System.out.println("Designation added with code as:"+designation.getCode());
+designationManager.updateDesignation(designation);
+System.out.println("Designation updated ");
 }catch(BLException blException)
 {
 if(blException.hasGenericException())

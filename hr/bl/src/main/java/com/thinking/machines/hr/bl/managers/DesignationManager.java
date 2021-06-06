@@ -210,41 +210,41 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
+DesignationInterface getDSDesignationByCode(int code)
+{
+DesignationInterface designation;
+designation=this.codeWiseDesignationsMap.get(code);
+return designation;
+}
 public DesignationInterface getDesignationByCode(int code)throws BLException
 {
-BLException blException;
-blException=new BLException();
-if(code<=0)
-{
-blException.addException("code","Invalid code");
-throw blException;
-}
 DesignationInterface designation;
 designation=this.codeWiseDesignationsMap.get(code);
 if(designation==null)
 {
+BLException blException=new BLException();
 blException.addException("code","Invalid code: "+code);
 throw blException;
 }
-return designation;
+DesignationInterface d=new Designation();
+d.setCode(designation.getCode());
+d.setTitle(designation.getTitle());
+return d;
 }
 public DesignationInterface getDesignationByTitle(String title)throws BLException
 {
-BLException blException;
-blException=new BLException();
-if(title==null)
-{
-blException.addException("title","title is null");
-throw blException;
-}
 DesignationInterface designation;
 designation=this.titleWiseDesignationsMap.get(title.toUpperCase());
 if(designation==null)
 {
-blException.addException("title","Invalid designation: "+title);
+BLException blException=new BLException();
+blException.addException("title","Invalid title: "+title);
 throw blException;
 }
-return designation;
+DesignationInterface d=new Designation();
+d.setCode(designation.getCode());
+d.setTitle(designation.getTitle());
+return d;
 }
 public int getDesignationCount()throws BLException
 {

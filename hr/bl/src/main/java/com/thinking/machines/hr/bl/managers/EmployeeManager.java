@@ -228,9 +228,175 @@ throw blException;
 }
 public void updateEmployee(EmployeeInterface employee)throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+BLException blException;
+blException=new BLException();
+if(employee==null)
+{
+blException.setGenericException("Employee is null");
 throw blException;
+}
+String employeeId=employee.getEmployeeId();
+String name=employee.getName();
+DesignationInterface designation=employee.getDesignation();
+int designationCode=0;
+Date dateOfBirth=employee.getDateOfBirth();
+char gender=employee.getGender();
+boolean isIndian=employee.getIsIndian();
+BigDecimal basicSalary=employee.getBasicSalary();
+String panNumber=employee.getPANNumber();
+String aadharCardNumber=employee.getAadharCardNumber();
+if(employeeId==null)
+{
+blException.addException("employeeId","Employee Id required ");
+}
+else
+{
+employeeId=employeeId.trim();
+if(employeeId.length()==0)
+{
+blException.addException("employeeId","Employee Id required ");
+}
+else
+{
+if(employeeIdWiseEmployeesMap.containsKey(employeeId.toUpperCase())==false)
+{
+blException.addException("employeeId","Invalid employee Id :"+employeeId);
+throw blException;
+}
+}
+}
+if(name==null)
+{
+blException.addException("name","Name required");
+}
+else
+{
+name=name.trim();
+if(name.length()==0)
+{
+blException.addException("name","Name required");
+}
+}
+DesignationManagerInterface designationManager;
+designationManager=DesignationManager.getDesignationManager();
+if(designation==null)
+{
+blException.addException("designation","Designation required");
+}
+else
+{
+designationCode=designation.getCode();
+if(designationManager.designationCodeExists(designation.getCode())==false)
+{
+blException.addException("designation","Invalid designation");
+}
+}
+if(dateOfBirth==null)
+{
+blException.addException("dateOfBirth","Date of birth required");
+}
+if(gender==' ')
+{
+blException.addException("gender","gender required");
+}
+if(basicSalary==null)
+{
+blException.addException("basicSalary","Basic salary required");
+}
+else
+{
+if(basicSalary.signum()==-1)
+{
+blException.addException("basicSalary","Basic salary can not be negative");
+}
+}
+if(panNumber==null)
+{
+blException.addException("panNumber","PAN number required");
+}
+else
+{
+panNumber=panNumber.trim();
+if(panNumber.length()==0)
+{
+blException.addException("panNumber","PAN number required");
+}
+}
+if(aadharCardNumber==null)
+{
+blException.addException("aadharCardNumber","Aadhar card number required");
+}
+else
+{
+aadharCardNumber=aadharCardNumber.trim();
+if(aadharCardNumber.length()==0)
+{
+blException.addException("aadharCardNumber","Aadhar card number required");
+}
+}
+if(panNumber!=null&&panNumber.length()>0)
+{
+EmployeeInterface ee=panNumberWiseEmployeesMap.get(panNumber.toUpperCase());
+if(ee!=null&&ee.getEmployeeId().equalsIgnoreCase(employeeId)==false)
+{
+blException.addException("panNumber","PAN number :"+panNumber+" exists.");
+}
+}
+if(aadharCardNumber!=null&&aadharCardNumber.length()>0)
+{
+EmployeeInterface ee=aadharCardNumberWiseEmployeesMap.get(aadharCardNumber.toUpperCase());
+if(ee!=null&&ee.getEmployeeId().equalsIgnoreCase(employeeId)==false)
+{
+blException.addException("aadharCardNumber","Aadhar card number :"+aadharCardNumber+" exists.");
+}
+}
+if(blException.hasExceptions())
+{
+throw blException;
+}
+try
+{
+EmployeeInterface dsEmployee;
+dsEmployee=employeeIdWiseEmployeesMap.get(employeeId.toUpperCase());
+String oldPANNumber=dsEmployee.getPANNumber();
+String oldAadharCardNumber=dsEmployee.getAadharCardNumber();
+EmployeeDAOInterface employeeDAO;
+employeeDAO=new EmployeeDAO();
+EmployeeDTOInterface dlEmployee;
+dlEmployee=new EmployeeDTO();
+dlEmployee.setEmployeeId(dsEmployee.getEmployeeId());
+dlEmployee.setName(name);
+dlEmployee.setDesignationCode(designation.getCode());
+dlEmployee.setDateOfBirth(dateOfBirth);
+dlEmployee.setGender((gender=='M')?GENDER.MALE:GENDER.FEMALE);
+dlEmployee.setIsIndian(isIndian);
+dlEmployee.setBasicSalary(basicSalary);
+dlEmployee.setPANNumber(panNumber);
+dlEmployee.setAadharCardNumber(aadharCardNumber);
+employeeDAO.update(dlEmployee);
+dsEmployee.setName(name);
+dsEmployee.setDesignation(((DesignationManager)designationManager).getDSDesignationByCode(designation.getCode()));
+dsEmployee.setDateOfBirth(dateOfBirth);
+dsEmployee.setGender((gender=='M')?GENDER.MALE:GENDER.FEMALE);
+dsEmployee.setIsIndian(isIndian);
+dsEmployee.setBasicSalary(basicSalary);
+dsEmployee.setPANNumber(panNumber);
+dsEmployee.setAadharCardNumber(aadharCardNumber);
+//delete from map
+this.employeeIdWiseEmployeesMap.remove(employeeId.toUpperCase());
+this.panNumberWiseEmployeesMap.remove(oldPANNumber);
+this.aadharCardNumberWiseEmployeesMap.remove(oldAadharCardNumber);
+this.employeesSet.add(dsEmployee);
+//add in map
+this.employeeIdWiseEmployeesMap.put(dsEmployee.getEmployeeId().toUpperCase(),dsEmployee);
+this.panNumberWiseEmployeesMap.put(panNumber.toUpperCase(),dsEmployee);
+this.aadharCardNumberWiseEmployeesMap.put(aadharCardNumber.toUpperCase(),dsEmployee);
+this.employeesSet.add(dsEmployee);
+}catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
 }
 public void removeEmployee(String employeeId)throws BLException
 {

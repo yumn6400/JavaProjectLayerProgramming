@@ -12,24 +12,26 @@ import com.thinking.machines.hr.dl.interfaces.dao.*;
 import java.text.*;
 import java.util.*;
 import java.math.*;
-public class EmployeeManagerAddTestCase
+public class EmployeeManagerUpdateTestCase
 {
 public static void main(String gg[])
 {
 try
 {
-String name="Rahul";
+String employeeId="A10000001";
+String name="Sammer";
 DesignationInterface designation;
 designation=new Designation();
 designation.setCode(3);
 Date dateOfBirth=new Date();
 boolean isIndian=false;
-BigDecimal basicSalary=new BigDecimal(100000);
-String panNumber="pan1234";
-String aadharCardNumber="addr1234";
+BigDecimal basicSalary=new BigDecimal(200000);
+String panNumber="pan1235";
+String aadharCardNumber="addr1235";
 
 EmployeeInterface employee;
 employee=new Employee();
+employee.setEmployeeId(employeeId);
 employee.setName(name);
 employee.setDesignation(designation);
 employee.setDateOfBirth(dateOfBirth);
@@ -40,8 +42,8 @@ employee.setPANNumber(panNumber);
 employee.setAadharCardNumber(aadharCardNumber);
 EmployeeManagerInterface employeeManager;
 employeeManager=EmployeeManager.getEmployeeManager();
-employeeManager.addEmployee(employee);
-System.out.println("Employee added with employee id as:("+employee.getEmployeeId()+")");
+employeeManager.updateEmployee(employee);
+System.out.println("Employee updated");
 }catch(BLException blException)
 {
 if(blException.hasGenericException())System.out.println(blException.getGenericException());

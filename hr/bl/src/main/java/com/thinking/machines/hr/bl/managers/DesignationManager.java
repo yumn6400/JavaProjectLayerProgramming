@@ -246,11 +246,11 @@ d.setCode(designation.getCode());
 d.setTitle(designation.getTitle());
 return d;
 }
-public int getDesignationCount()throws BLException
+public int getDesignationCount()
 {
 return this.designationsSet.size();
 }
-public Boolean designationCodeExists(int code)throws BLException
+public Boolean designationCodeExists(int code)
 {
 if(code<=0)
 {
@@ -258,7 +258,7 @@ return false;
 }
 return this.codeWiseDesignationsMap.containsKey(code);
 }
-public Boolean designationTitleExists(String title)throws BLException
+public Boolean designationTitleExists(String title)
 {
 if(title==null)
 {
@@ -266,7 +266,7 @@ return false;
 }
 return this.titleWiseDesignationsMap.containsKey(title.toUpperCase());
 }
-public Set<DesignationInterface> getDesignations()throws BLException
+public Set<DesignationInterface> getDesignations()
 {
 Set<DesignationInterface> designations;
 designations=new TreeSet<>();

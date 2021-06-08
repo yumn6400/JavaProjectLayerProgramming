@@ -215,7 +215,6 @@ dsEmployee.setIsIndian(isIndian);
 dsEmployee.setBasicSalary(basicSalary);
 dsEmployee.setPANNumber(panNumber);
 dsEmployee.setAadharCardNumber(aadharCardNumber);
-//add in map
 this.employeeIdWiseEmployeesMap.put(dsEmployee.getEmployeeId().toUpperCase(),dsEmployee);
 this.panNumberWiseEmployeesMap.put(panNumber.toUpperCase(),dsEmployee);
 this.aadharCardNumberWiseEmployeesMap.put(aadharCardNumber.toUpperCase(),dsEmployee);
@@ -382,12 +381,10 @@ dsEmployee.setIsIndian(isIndian);
 dsEmployee.setBasicSalary(basicSalary);
 dsEmployee.setPANNumber(panNumber);
 dsEmployee.setAadharCardNumber(aadharCardNumber);
-//delete from map
 this.employeeIdWiseEmployeesMap.remove(employeeId.toUpperCase());
 this.panNumberWiseEmployeesMap.remove(oldPANNumber);
 this.aadharCardNumberWiseEmployeesMap.remove(oldAadharCardNumber);
 this.employeesSet.add(dsEmployee);
-//add in map
 this.employeeIdWiseEmployeesMap.put(dsEmployee.getEmployeeId().toUpperCase(),dsEmployee);
 this.panNumberWiseEmployeesMap.put(panNumber.toUpperCase(),dsEmployee);
 this.aadharCardNumberWiseEmployeesMap.put(aadharCardNumber.toUpperCase(),dsEmployee);
@@ -400,57 +397,171 @@ throw blException;
 }
 public void removeEmployee(String employeeId)throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(employeeId==null)
+{
+BLException blException;
+blException=new BLException();
+blException.addException("employeeId","Employee Id required ");
+}
+else
+{
+employeeId=employeeId.trim();
+if(employeeId.length()==0)
+{
+BLException blException;
+blException=new BLException();
+blException.addException("employeeId","Employee Id required ");
 throw blException;
+}
+else
+{
+if(employeeIdWiseEmployeesMap.containsKey(employeeId.toUpperCase())==false)
+{
+BLException blException;
+blException=new BLException();
+blException.addException("employeeId","Invalid employee Id :"+employeeId);
+throw blException;
+}
+}
+}
+try
+{
+EmployeeInterface dsEmployee;
+dsEmployee=employeeIdWiseEmployeesMap.get(employeeId.toUpperCase());
+EmployeeDAOInterface employeeDAO;
+employeeDAO=new EmployeeDAO();
+employeeDAO.delete(dsEmployee.getEmployeeId());
+this.employeeIdWiseEmployeesMap.remove(employeeId.toUpperCase());
+this.panNumberWiseEmployeesMap.remove(dsEmployee.getPANNumber().toUpperCase());
+this.aadharCardNumberWiseEmployeesMap.remove(dsEmployee.getAadharCardNumber().toUpperCase());
+this.employeesSet.add(dsEmployee);
+}catch(DAOException daoException)
+{
+BLException blException;
+blException=new BLException();
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
 }
 public EmployeeInterface getEmployeeByEmployeeId(String employeeId)throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+EmployeeInterface dsEmployee=employeeIdWiseEmployeesMap.get(employeeId.toUpperCase());
+if(dsEmployee==null)
+{
+BLException blException;
+blException=new BLException();
+blException.addException("employeeId","Invalid Employee Id:"+employeeId);
 throw blException;
+}
+EmployeeInterface employee=new Employee();
+employee.setEmployeeId(dsEmployee.getEmployeeId());
+employee.setName(dsEmployee.getName());
+DesignationInterface dsDesignation=dsEmployee.getDesignation();
+DesignationInterface designation=new Designation();
+designation.setCode(dsDesignation.getCode());
+designation.setTitle(dsDesignation.getTitle());
+employee.setDesignation(designation);
+employee.setDateOfBirth(dsEmployee.getDateOfBirth());
+employee.setGender((dsEmployee.getGender()=='M')?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(dsEmployee.getIsIndian());
+employee.setBasicSalary(dsEmployee.getBasicSalary());
+employee.setPANNumber(dsEmployee.getPANNumber());
+employee.setAadharCardNumber(dsEmployee.getAadharCardNumber());
+return employee;
 }
 public EmployeeInterface getEmployeeByPANNumber(String panNumber)throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+EmployeeInterface dsEmployee=panNumberWiseEmployeesMap.get(panNumber.toUpperCase());
+if(dsEmployee==null)
+{
+BLException blException;
+blException=new BLException();
+blException.addException("panNumber","Invalid PAN number:"+panNumber);
 throw blException;
+}
+EmployeeInterface employee=new Employee();
+employee.setEmployeeId(dsEmployee.getEmployeeId());
+employee.setName(dsEmployee.getName());
+DesignationInterface dsDesignation=dsEmployee.getDesignation();
+DesignationInterface designation=new Designation();
+designation.setCode(dsDesignation.getCode());
+designation.setTitle(dsDesignation.getTitle());
+employee.setDesignation(designation);
+employee.setDateOfBirth(dsEmployee.getDateOfBirth());
+employee.setGender((dsEmployee.getGender()=='M')?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(dsEmployee.getIsIndian());
+employee.setBasicSalary(dsEmployee.getBasicSalary());
+employee.setPANNumber(dsEmployee.getPANNumber());
+employee.setAadharCardNumber(dsEmployee.getAadharCardNumber());
+return employee;
 }
 public EmployeeInterface getEmployeeByAadharCardNumber(String aadharCardNumber)throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+EmployeeInterface dsEmployee=aadharCardNumberWiseEmployeesMap.get(aadharCardNumber.toUpperCase());
+if(dsEmployee==null)
+{
+BLException blException;
+blException=new BLException();
+blException.addException("aadharCardNumber","Invalid Aadhar card number:"+aadharCardNumber);
 throw blException;
 }
-public int getEmployeeCount()throws BLException
-{
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+EmployeeInterface employee=new Employee();
+employee.setEmployeeId(dsEmployee.getEmployeeId());
+employee.setName(dsEmployee.getName());
+DesignationInterface dsDesignation=dsEmployee.getDesignation();
+DesignationInterface designation=new Designation();
+designation.setCode(dsDesignation.getCode());
+designation.setTitle(dsDesignation.getTitle());
+employee.setDesignation(designation);
+employee.setDateOfBirth(dsEmployee.getDateOfBirth());
+employee.setGender((dsEmployee.getGender()=='M')?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(dsEmployee.getIsIndian());
+employee.setBasicSalary(dsEmployee.getBasicSalary());
+employee.setPANNumber(dsEmployee.getPANNumber());
+employee.setAadharCardNumber(dsEmployee.getAadharCardNumber());
+return employee;
 }
-public boolean employeeIdExists(String employeeId)throws BLException
+public int getEmployeeCount()
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.employeesSet.size();
 }
-public boolean employeePANNumberExists(String panNumber)throws BLException
+public boolean employeeIdExists(String employeeId)
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.employeeIdWiseEmployeesMap.containsKey(employeeId.toUpperCase());
 }
-public boolean employeeAadharCardNumberExists(String aadharCardNumber)throws BLException
+public boolean employeePANNumberExists(String panNumber)
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.panNumberWiseEmployeesMap.containsKey(panNumber.toUpperCase());
 }
-public Set<EmployeeInterface> getEmployees()throws BLException
+public boolean employeeAadharCardNumberExists(String aadharCardNumber)
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.aadharCardNumberWiseEmployeesMap.containsKey(aadharCardNumber.toUpperCase());
+}
+public Set<EmployeeInterface> getEmployees()
+{
+Set<EmployeeInterface> employees=new TreeSet<>();
+EmployeeInterface employee;
+DesignationInterface dsDesignation;
+DesignationInterface designation;
+for(EmployeeInterface dsEmployee:employeesSet)
+{
+employee=new Employee();
+employee.setEmployeeId(dsEmployee.getEmployeeId());
+employee.setName(dsEmployee.getName());
+dsDesignation=dsEmployee.getDesignation();
+designation=new Designation();
+designation.setCode(dsDesignation.getCode());
+designation.setTitle(dsDesignation.getTitle());
+employee.setDesignation(designation);
+employee.setDateOfBirth(dsEmployee.getDateOfBirth());
+employee.setGender((dsEmployee.getGender()=='M')?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(dsEmployee.getIsIndian());
+employee.setBasicSalary(dsEmployee.getBasicSalary());
+employee.setPANNumber(dsEmployee.getPANNumber());
+employee.setAadharCardNumber(dsEmployee.getAadharCardNumber());
+employees.add(employee);
+}
+return employees;
 }
 public Set<EmployeeInterface>getEmployeesByEmployeeCode(int employeeCode)throws BLException
 {

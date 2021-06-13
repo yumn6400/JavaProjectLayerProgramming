@@ -417,7 +417,6 @@ this.panNumberWiseEmployeesMap.put(panNumber.toUpperCase(),dsEmployee);
 this.aadharCardNumberWiseEmployeesMap.put(aadharCardNumber.toUpperCase(),dsEmployee);
 if(oldDesignationCode!=dsEmployee.getDesignation().getCode())
 {
-System.out.println(oldDesignationCode+","+dsEmployee.getDesignation().getCode());
 Set<EmployeeInterface>ets;
 ets=this.designationCodeWiseEmployeesMap.get(oldDesignationCode);
 ets.remove(dsEmployee);

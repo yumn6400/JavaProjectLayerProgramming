@@ -18,17 +18,16 @@ public static void main(String gg[])
 {
 try
 {
-String employeeId="A10000001";
-String name="Sammer";
+String employeeId="A10000005";
+String name="Harish";
 DesignationInterface designation;
 designation=new Designation();
 designation.setCode(3);
 Date dateOfBirth=new Date();
-boolean isIndian=false;
-BigDecimal basicSalary=new BigDecimal(200000);
-String panNumber="pan1235";
-String aadharCardNumber="addr1235";
-
+boolean isIndian=true;
+BigDecimal basicSalary=new BigDecimal(11111);
+String panNumber="pan111";
+String aadharCardNumber="addr111";
 EmployeeInterface employee;
 employee=new Employee();
 employee.setEmployeeId(employeeId);

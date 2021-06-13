@@ -12,36 +12,15 @@ import com.thinking.machines.hr.dl.interfaces.dao.*;
 import java.text.*;
 import java.util.*;
 import java.math.*;
-public class EmployeeManagerAddTestCase
+public class EmployeeManagerGetEmployeeCountTestCase
 {
 public static void main(String gg[])
 {
 try
 {
-String name="Harish";
-DesignationInterface designation;
-designation=new Designation();
-designation.setCode(3);
-Date dateOfBirth=new Date();
-boolean isIndian=true;
-BigDecimal basicSalary=new BigDecimal(99999);
-String panNumber="pan999";
-String aadharCardNumber="addr999";
-
-EmployeeInterface employee;
-employee=new Employee();
-employee.setName(name);
-employee.setDesignation(designation);
-employee.setDateOfBirth(dateOfBirth);
-employee.setGender(GENDER.MALE);
-employee.setIsIndian(isIndian);
-employee.setBasicSalary(basicSalary);
-employee.setPANNumber(panNumber);
-employee.setAadharCardNumber(aadharCardNumber);
 EmployeeManagerInterface employeeManager;
 employeeManager=EmployeeManager.getEmployeeManager();
-employeeManager.addEmployee(employee);
-System.out.println("Employee added with employee id as:("+employee.getEmployeeId()+")");
+System.out.println("Employee Count:"+employeeManager.getEmployeeCount());
 }catch(BLException blException)
 {
 if(blException.hasGenericException())System.out.println(blException.getGenericException());

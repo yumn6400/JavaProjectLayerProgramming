@@ -8,9 +8,10 @@ class DesignationManagerAddTestCase
 {
 public static void main(String gg[])
 {
+String title=gg[0];
 DesignationInterface designation=new Designation();
 designation.setCode(0);
-designation.setTitle("manager");
+designation.setTitle(title);
 try
 {
 DesignationManagerInterface designationManager;

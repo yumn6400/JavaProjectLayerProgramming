@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-public class DesignationUI extends JFrame
+public class DesignationUI extends JFrame implements DocumentListener
 {
 private JLabel titleLabel;
 private JLabel searchLabel;
@@ -34,7 +34,7 @@ titleLabel=new JLabel("Designations");
 searchLabel=new JLabel("Search");
 searchTextField=new JTextField();
 clearSearchTextFieldButton=new JButton("X");
-searchErrorLabel=new JLabel("Not Found");
+searchErrorLabel=new JLabel("");
 searchErrorLabel.setForeground(Color.red);
 designationTable=new JTable(designationModel);
 scrollPane=new JScrollPane(designationTable,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -89,6 +89,44 @@ setLocation((d.width/2)-(w/2),(d.height/2)-(h/2));
 }
 private void addListeners()
 {
+searchTextField.getDocument().addDocumentListener(this);
+clearSearchTextFieldButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent ev)
+{
+searchTextField.setText("");
+searchTextField.requestFocus();
+}
+});
+}
+public void searchDesignation()
+{
+searchErrorLabel.setText("");
+String title=searchTextField.getText().trim();
+if(title.length()==0)return;
+int rowIndex=0;
+try
+{
+rowIndex=designationModel.indexOfTitle(title,true);
+}catch(BLException blException)
+{
+searchErrorLabel.setText("Not Found");
+return;
+}
+designationTable.setRowSelectionInterval(rowIndex,rowIndex);
+Rectangle rectangle=designationTable.getCellRect(rowIndex,0,true);
+designationTable.scrollRectToVisible(rectangle);
+}
+public void changedUpdate(DocumentEvent ev)
+{
+searchDesignation();
+}
+public void removeUpdate(DocumentEvent ev)
+{
+searchDesignation();
+}
+public void insertUpdate(DocumentEvent ev)
+{
+searchDesignation();
 }
 //Inner class starts
 class DesignationPanel extends JPanel

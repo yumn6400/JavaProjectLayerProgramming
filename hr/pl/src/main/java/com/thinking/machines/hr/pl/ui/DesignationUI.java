@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-public class DesignationUI extends JFrame implements DocumentListener
+public class DesignationUI extends JFrame implements DocumentListener,ListSelectionListener
 {
 private JLabel titleLabel;
 private JLabel searchLabel;
@@ -97,6 +97,19 @@ searchTextField.setText("");
 searchTextField.requestFocus();
 }
 });
+designationTable.getSelectionModel().addListSelectionListener(this);
+}
+public void valueChanged(ListSelectionEvent ev)
+{
+int selectedRowIndex=designationTable.getSelectedRow();
+try
+{
+DesignationInterface designation=designationModel.getDesignationAt(selectedRowIndex);
+designationPanel.setDesignation(designation);
+}catch(BLException blException)
+{
+designationPanel.clearDesignation();
+}
 }
 public void searchDesignation()
 {
@@ -131,9 +144,84 @@ searchDesignation();
 //Inner class starts
 class DesignationPanel extends JPanel
 {
+private JLabel titleCaptionLabel;
+private JLabel titleLabel;
+private JTextField titleTextField;
+private JButton clearTitleTextFieldButton;
+private JButton addButton;
+private JButton editButton;
+private JButton cancelButton;
+private JButton deleteButton;
+private JButton exportToPDFFormButton;
+private JPanel buttonsPanel;
+private DesignationInterface designation;
 DesignationPanel()
 {
 setBorder(BorderFactory.createLineBorder(new Color(175,175,175)));
+initComponents();
+setApperence();
+addListeners();
+}
+public void setDesignation(DesignationInterface designation)
+{
+this.designation=designation;
+titleLabel.setText(designation.getTitle());
+}
+public void clearDesignation()
+{
+this.designation=null;
+titleLabel.setText("");
+}
+private void initComponents()
+{
+designation=null;
+titleCaptionLabel=new JLabel("Designation");
+titleLabel=new JLabel("");
+titleTextField=new JTextField();
+clearTitleTextFieldButton=new JButton("x");
+addButton=new JButton("A");
+editButton=new JButton("E");
+cancelButton=new JButton("C");
+deleteButton=new JButton("D");
+exportToPDFFormButton=new JButton("E");
+buttonsPanel=new JPanel();
+}
+private void setApperence()
+{
+Font captionFont=new Font("Verdana",Font.BOLD,16);
+Font dataFont=new Font("Verdana",Font.PLAIN,16);
+titleCaptionLabel.setFont(captionFont);
+titleLabel.setFont(dataFont);
+titleTextField.setFont(dataFont);
+int lm,tm;
+lm=0;
+tm=0;
+setLayout(null);
+titleCaptionLabel.setBounds(lm+10,tm+20,110,30);
+titleLabel.setBounds(lm+110+10,tm+20,400,30);
+titleTextField.setBounds(lm+10+110+5,tm+20,350,30);
+clearTitleTextFieldButton.setBounds(lm+10+110+5+350+5,tm+20,30,30);
+buttonsPanel.setBounds(lm+50,tm+20+30+30,465,75);
+buttonsPanel.setBorder(BorderFactory.createLineBorder(new Color(165,165,165)));
+addButton.setBounds(70,12,50,50);
+editButton.setBounds(70+50+20,12,50,50);
+cancelButton.setBounds(70+50+20+50+20,12,50,50);
+deleteButton.setBounds(70+50+20+50+20+50+20,12,50,50);
+exportToPDFFormButton.setBounds(70+50+20+50+20+50+20+50+20,12,50,50);
+add(titleCaptionLabel);
+add(titleLabel);
+//add(titleTextField);
+add(clearTitleTextFieldButton);
+buttonsPanel.setLayout(null);
+buttonsPanel.add(addButton);
+buttonsPanel.add(editButton);
+buttonsPanel.add(cancelButton);
+buttonsPanel.add(deleteButton);
+buttonsPanel.add(exportToPDFFormButton);
+add(buttonsPanel);
+}
+private void addListeners()
+{
 }
 } 
 }

@@ -121,6 +121,22 @@ BLException blException=new BLException();
 blException.setGenericException("Invalid title :"+title);
 throw blException;
 }
+public void update(DesignationInterface designation)throws BLException
+{
+designationManager.updateDesignation(designation);
+this.designations.remove(indexOfDesignation(designation));
+this.designations.add(designation);
+Collections.sort(this.designations,new Comparator<DesignationInterface>(){
+public int compare(DesignationInterface left,DesignationInterface right)
+{
+return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
+}
+});
+fireTableDataChanged();
+}
+
+
+
 public void remove(int code)throws BLException
 {
 designationManager.removeDesignation(code);

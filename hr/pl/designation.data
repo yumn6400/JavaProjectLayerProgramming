@@ -1,5 +1,5 @@
-18        
-15        
+25        
+19        
 2
 clerk
 3
@@ -9,15 +9,13 @@ waiter
 5
 round
 6
-manager
-7
-carpenter
+Manager
 8
 plumber
 9
 garderner
 11
-Producer
+producer
 12
 Supervisor
 14
@@ -30,3 +28,13 @@ Dish Maker
 Round cleaner
 18
 Surface cleaner
+19
+WatchMen
+21
+door keeper
+22
+hr manager
+23
+guard
+24
+cleaner

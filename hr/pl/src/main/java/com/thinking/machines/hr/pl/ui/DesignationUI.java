@@ -7,6 +7,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
+import java.io.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 public class DesignationUI extends JFrame implements DocumentListener,ListSelectionListener
@@ -23,8 +24,27 @@ private Container container;
 private DesignationPanel designationPanel;
 private enum MODE{VIEW,ADD,EDIT,DELETE,EXPORT_TO_PDF};
 private MODE mode;
+private ImageIcon logoIcon;
+private ImageIcon addIcon;
+private ImageIcon editIcon;
+private ImageIcon cancelIcon;
+private ImageIcon deleteIcon;
+private ImageIcon pdfIcon;
+private ImageIcon searchBarClearIcon;
+private ImageIcon saveIcon;
+private ImageIcon updateIcon;
 public DesignationUI()
 {
+logoIcon=new ImageIcon(this.getClass().getResource("/icons/logo_icon.png"));
+setIconImage(logoIcon.getImage());
+addIcon=new ImageIcon(this.getClass().getResource("/icons/add_icon.png"));
+editIcon=new ImageIcon(this.getClass().getResource("/icons/edit_icon.png"));
+cancelIcon=new ImageIcon(this.getClass().getResource("/icons/cancel_icon.png"));
+deleteIcon=new ImageIcon(this.getClass().getResource("/icons/delete_icon.png"));
+pdfIcon=new ImageIcon(this.getClass().getResource("/icons/pdf_icon.png"));
+searchBarClearIcon=new ImageIcon(this.getClass().getResource("/icons/search_bar_clear_icon.png"));
+saveIcon=new ImageIcon(this.getClass().getResource("/icons/save_icon.png"));
+updateIcon=new ImageIcon(this.getClass().getResource("/icons/update_icon.png"));
 initComponents();
 setApperence();
 addListeners();
@@ -37,7 +57,7 @@ designationModel=new DesignationModel();
 titleLabel=new JLabel("Designations");
 searchLabel=new JLabel("Search");
 searchTextField=new JTextField();
-clearSearchTextFieldButton=new JButton("X");
+clearSearchTextFieldButton=new JButton(searchBarClearIcon);
 searchErrorLabel=new JLabel("");
 searchErrorLabel.setForeground(Color.red);
 designationTable=new JTable(designationModel);
@@ -226,12 +246,12 @@ designation=null;
 titleCaptionLabel=new JLabel("Designation");
 titleLabel=new JLabel("");
 titleTextField=new JTextField();
-clearTitleTextFieldButton=new JButton("x");
-addButton=new JButton("A");
-editButton=new JButton("E");
-cancelButton=new JButton("C");
-deleteButton=new JButton("D");
-exportToPDFButton=new JButton("E");
+clearTitleTextFieldButton=new JButton(searchBarClearIcon);
+addButton=new JButton(addIcon);
+editButton=new JButton(editIcon);
+cancelButton=new JButton(cancelIcon);
+deleteButton=new JButton(deleteIcon);
+exportToPDFButton=new JButton(pdfIcon);
 buttonsPanel=new JPanel();
 }
 private void setApperence()
@@ -381,6 +401,41 @@ JOptionPane.showMessageDialog(this,blException.getException("title"));
 }
 }
 }
+private void exportToPDFDesignation()
+{
+JFileChooser jfc=new JFileChooser();
+jfc.setCurrentDirectory(new File("."));
+int selectedOption=jfc.showSaveDialog(DesignationUI.this);
+if(selectedOption==jfc.APPROVE_OPTION)
+{
+try
+{
+File selectedFile=jfc.getSelectedFile();
+String pdfFile=selectedFile.getAbsolutePath();
+if(pdfFile.endsWith("."))pdfFile+="pdf";
+else if(!pdfFile.endsWith(".pdf"))pdfFile+=".pdf";
+File file=new File(pdfFile);
+File parent=new File(file.getParent());
+if(parent.exists()==false||parent.isDirectory()==false)
+{
+JOptionPane.showMessageDialog(this,"Incorrect Path:"+file.getAbsolutePath());
+return;
+}
+designationModel.exportToPDF(file);
+JOptionPane.showMessageDialog(this,"Data exported to "+file.getAbsolutePath());
+}catch(BLException blException)
+{
+if(blException.hasGenericException())
+{
+JOptionPane.showMessageDialog(this,blException.getGenericException());
+}
+}
+catch(Exception e)
+{
+System.out.println(e);
+}
+}
+}
 private void addListeners()
 {
 this.addButton.addActionListener(new ActionListener(){
@@ -427,12 +482,18 @@ public void actionPerformed(ActionEvent ev)
 setDeleteMode();
 }
 });
+this.exportToPDFButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent ev)
+{
+setExportToPDFMode();
+}
+});
 }
 void setViewMode()
 {
 DesignationUI.this.setViewMode();
-this.addButton.setText("A");
-this.editButton.setText("E");
+this.addButton.setIcon(addIcon);
+this.editButton.setIcon(editIcon);
 this.titleTextField.setVisible(false);
 this.clearTitleTextFieldButton.setVisible(false);
 this.titleLabel.setVisible(true);
@@ -458,7 +519,7 @@ this.titleTextField.setText("");
 this.titleLabel.setVisible(false);
 this.clearTitleTextFieldButton.setVisible(true);
 this.titleTextField.setVisible(true);
-addButton.setText("S");
+addButton.setIcon(saveIcon);
 editButton.setEnabled(false);
 cancelButton.setEnabled(true);
 deleteButton.setEnabled(false);
@@ -481,7 +542,7 @@ editButton.setEnabled(true);
 cancelButton.setEnabled(true);
 deleteButton.setEnabled(false);
 exportToPDFButton.setEnabled(false);
-editButton.setText("U");
+editButton.setIcon(updateIcon);
 }
 void setDeleteMode()
 {
@@ -508,6 +569,9 @@ editButton.setEnabled(false);
 cancelButton.setEnabled(false);
 deleteButton.setEnabled(false);
 exportToPDFButton.setEnabled(false);
+exportToPDFDesignation();
+DesignationUI.this.setViewMode();
+this.setViewMode();
 }
 } //Inner class ends
 }

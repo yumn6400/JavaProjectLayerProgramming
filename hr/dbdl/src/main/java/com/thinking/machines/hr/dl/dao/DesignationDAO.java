@@ -5,7 +5,6 @@ import com.thinking.machines.hr.dl.interfaces.dao.*;
 import com.thinking.machines.hr.dl.interfaces.dto.*;
 import com.thinking.machines.hr.dl.exceptions.*;
 import java.util.*;
-import java.io.*;
 import java.sql.*;
 public class DesignationDAO implements DesignationDAOInterface
 {
@@ -105,7 +104,7 @@ try
 {
 Connection connection=DAOConnection.getConnection();
 PreparedStatement preparedStatement;
-preparedStatement=connection.prepareStatement("select code from designation where code=?");
+preparedStatement=connection.prepareStatement("select * from designation where code=?");
 preparedStatement.setInt(1,code);
 ResultSet resultSet;
 resultSet=preparedStatement.executeQuery();
@@ -115,6 +114,19 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 throw new DAOException("Code: "+code+" does not exist.");
+}
+String title=resultSet.getString("title");
+resultSet.close();
+preparedStatement.close();
+preparedStatement=connection.prepareStatement("select gender from employee where designation_code=?");
+preparedStatement.setInt(1,code);
+resultSet=preparedStatement.executeQuery();
+if(resultSet.next())
+{
+resultSet.close();
+preparedStatement.close();
+connection.close();
+throw new DAOException("Cannot delete designation: "+title+" as it has been alloted to employee(s)");
 }
 resultSet.close();
 preparedStatement.close();

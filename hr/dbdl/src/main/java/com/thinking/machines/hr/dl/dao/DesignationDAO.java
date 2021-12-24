@@ -8,7 +8,6 @@ import java.util.*;
 import java.sql.*;
 public class DesignationDAO implements DesignationDAOInterface
 {
-private final static String FILE_NAME="designation.data";
 public void add(DesignationDTOInterface designationDTO)throws DAOException
 {
 if(designationDTO==null)throw new DAOException("Designation is null");

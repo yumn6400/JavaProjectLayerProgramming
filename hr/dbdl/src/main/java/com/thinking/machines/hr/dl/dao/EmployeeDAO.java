@@ -11,7 +11,6 @@ import com.thinking.machines.hr.dl.dto.*;
 import com.thinking.machines.hr.dl.dao.*;
 public class EmployeeDAO implements EmployeeDAOInterface
 {
-private final static String FILE_NAME="employee.data";
 public void add(EmployeeDTOInterface employeeDTO)throws DAOException
 {
 if(employeeDTO==null)throw new DAOException("employee is null");
@@ -882,4 +881,4 @@ return count;
 throw new DAOException(sqlException.getMessage());
 }
 }
-}
+};

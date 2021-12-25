@@ -6,5 +6,10 @@ com/thinking/machines/hr/bl/managers/DesignationManager.java
  com.thinking.machines.hr.bl.managers.DesignationManager
 com/thinking/machines/hr/bl/pojo/Designation.java
  com.thinking.machines.hr.bl.pojo.Designation
+com/thinking/machines/hr/bl/managers/Managers.java
+ com.thinking.machines.hr.bl.managers.Managers
+ com.thinking.machines.hr.bl.managers.Managers$Designation
+ com.thinking.machines.hr.bl.managers.Managers$Designation$Action
+ com.thinking.machines.hr.bl.managers.Managers$managerType
 com/thinking/machines/hr/bl/interfaces/pojo/DesignationInterface.java
  com.thinking.machines.hr.bl.interfaces.pojo.DesignationInterface

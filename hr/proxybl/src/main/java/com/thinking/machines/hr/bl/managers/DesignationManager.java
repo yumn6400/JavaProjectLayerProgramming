@@ -51,8 +51,8 @@ if(blException.hasExceptions())
 throw blException;
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("add");
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.ADD_DESIGNATION));
 request.setArguments(designation);
 NetworkClient client=new NetworkClient();
 try
@@ -71,9 +71,6 @@ blException=new BLException();
 blException.setGenericException(networkException.getMessage());
 throw blException;
 }
-
-
-
 }
 public void updateDesignation(DesignationInterface designation)throws BLException
 {
@@ -108,8 +105,8 @@ if(blException.hasExceptions())
 throw blException;
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("update");
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.UPDATE_DESIGNATION));
 request.setArguments(designation);
 try
 {
@@ -128,6 +125,7 @@ throw blException;
 }
 public void removeDesignation(int code)throws BLException
 {
+BLException blException=new BLException();
 if(code<=0)
 {
 blException.addException("code","Invalid code:"+code);
@@ -137,9 +135,9 @@ if(blException.hasExceptions())
 throw blException;
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("remove");
-request.setArguments(code);
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.REMOVE_DESIGNATION));
+request.setArguments(new Integer(code));
 try
 {
 NetworkClient client=new NetworkClient();
@@ -157,6 +155,7 @@ throw blException;
 }
 public DesignationInterface getDesignationByCode(int code)throws BLException
 {
+BLException blException=new BLException();
 if(code<=0)
 {
 blException.addException("code","Invalid code:"+code);
@@ -166,9 +165,9 @@ if(blException.hasExceptions())
 throw blException;
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("getDesignationByCode");
-request.setArguments(code);
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.GET_DESIGNATION_BY_CODE));
+request.setArguments(new Integer(code));
 try
 {
 NetworkClient client=new NetworkClient();
@@ -188,6 +187,7 @@ throw blException;
 }
 public DesignationInterface getDesignationByTitle(String title)throws BLException
 {
+BLException blException=new BLException();
 if(title==null)
 {
 blException.addException("title","Title required");
@@ -206,8 +206,8 @@ if(blException.hasExceptions())
 throw blException;
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("getDesignationByTitle");
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.GET_DESIGNATION_BY_TITLE));
 request.setArguments(title);
 try
 {
@@ -229,24 +229,17 @@ throw blException;
 public int getDesignationCount()
 {
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("getDesignationCount");
-//request.setArguments(code);
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.GET_DESIGNATION_COUNT));
 try
 {
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
-if(response.hasException())
-{
-blException=(BLException)response.getException();
-throw blException;
-}
-int count=(int)response.getResult();
-return count;
+Integer count=(Integer)response.getResult();
+return count.intValue();//no need to intValue unboxing, will be done implictly
 }catch(NetworkException networkException)
 {
-blException.setGenericException(networkException.getMessage());
-throw blException;
+throw new RuntimeException(networkException.getMessage());
 }
 }
 public Boolean designationCodeExists(int code)
@@ -256,21 +249,18 @@ if(code<=0)
 return false;
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("designationCodeExists");
-request.setArguments(code);
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.DESIGNATION_CODE_EXISTS));
+request.setArguments(new Integer(code));
 try
 {
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
-if(response.hasException())
-{
-return false;
-}
-return true;
+Boolean exists=(Boolean)response.getResult();
+return exists;
 }catch(NetworkException networkException)
 {
-return false;
+throw new RuntimeException(networkException.getMessage());
 }
 }
 public Boolean designationTitleExists(String title)
@@ -288,25 +278,34 @@ return false;
 }
 }
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("designationTitleExists");
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.DESIGNATION_TITLE_EXISTS));
 request.setArguments(title);
 try
 {
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
-if(response.hasException())
-{
-return false;
-}
-return true;
+Boolean exists=(Boolean)response.getResult();
+return exists;
 }catch(NetworkException networkException)
 {
-return false;
+throw new RuntimeException(networkException.getMessage());
 }
 }
 public Set<DesignationInterface> getDesignations()
 {
-return null;
+Request request=new Request();
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getAction(Managers.Designation.GET_DESIGNATIONS));
+try
+{
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+Set<DesignationInterface> designations=(Set<DesignationInterface>)response.getResult();
+return designations;
+}catch(NetworkException networkException)
+{
+throw new RuntimeException(networkException.getMessage());
+}
 }
 }

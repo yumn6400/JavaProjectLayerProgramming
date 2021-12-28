@@ -25,7 +25,8 @@ header[i]=(byte)(x%10);
 x=x/10;
 i--;
 }
-Socket socket=new Socket("localhost",5500);
+//Socket socket=new Socket("localhost",5500);
+Socket socket=new Socket(Configuration.getHost(),Configuration.getPort());
 OutputStream os=socket.getOutputStream();
 os.write(header,0,1024);
 os.flush();

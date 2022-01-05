@@ -1,0 +1,1 @@
+java -classpath ..\build\libs\hrserver.jar;..\..\bl\build\libs\bl.jar;..\..\dbdl\build\libs\dbdl.jar;..\..\common\dist\hr-common.jar;..\..\netcommon\build\libs\netcommon.jar;c:\mysqljar\*;..\..\netserver\build\libs\netserver.jar;. com.thinking.machines.hr.server.main.Main
